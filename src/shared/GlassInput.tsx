@@ -20,8 +20,9 @@ const GlassInput: React.FC<GlassInputProps> = ({
             type={type}
             placeholder={placeholder}
             value={value} 
+            onChange={onChange}
             className={cn(
-                "bg-white/20 rounded-lg px-2 py-1 border border-white/20 focus:border-white/40 focus:outline-none transition-colors",
+                "bg-white/10 rounded-lg px-2 py-1 border border-white/20 focus:border-white/40 focus:outline-none transition-colors",
                 className
             )}
             {...props} 
