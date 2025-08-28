@@ -1,12 +1,11 @@
 'use client';
 import React, { useEffect } from "react";
-import { useAuth } from "@/context/AuthProvider";
 import Prism from "@/bits/Prism";
+import NxtBtn from "@/shared/NxtBtn"
 import GlassBox from "@/shared/GlassBox";
 import gsap from "gsap";
 
 const Landing: React.FC = () => {
-    const { isAuthenticated } = useAuth();
     let tl = gsap.timeline();
 
     useEffect(() => {
@@ -46,8 +45,13 @@ const Landing: React.FC = () => {
 
             {/* Scrollable Content */}
             <div className="relative z-10">
+                <div className="absolute top-0 right-0 mr-4 mt-4">
+                    <NxtBtn href="/login" className="cursor-pointer uppercase font-extralight px-4 py-2 rounded-2xl bg-black/10 backdrop-blur-lg shadow-[0_0_10px_rgba(6,182,212,0.75)] hover:inset-shadow-[0_0_20px_rgba(6,182,212,0.75)]">
+                        Login
+                    </NxtBtn>
+                </div>
                 {/* Hero Section */}
-                <div className="flex flex-col h-screen bg-transparent text-default w-full justify-center items-center gap-2">
+                <div className="flex flex-col h-lvh bg-transparent text-default w-full justify-center items-center gap-2">
                     <div className="w-4/5 md:w-1/2 flex flex-col justify-center items-center space-y-4">
                         <div className="text-center space-y-4">
                             <h1 id="logo" className="text-4xl font-bold">LOGO</h1>
@@ -70,7 +74,7 @@ const Landing: React.FC = () => {
                 </div>
 
                 {/* Learn More Section */}
-                <section id="learn-more-section" className="min-h-screen bg-black/20 backdrop-blur-sm p-8 font-extralight">
+                <section id="learn-more-section" className="min-h-lvh bg-black/20 backdrop-blur-sm p-8 font-extralight">
                     <div className="max-w-4xl mx-auto">
                         <h2 className="text-3xl mb-8 text-center">About Grippendor</h2>
 
