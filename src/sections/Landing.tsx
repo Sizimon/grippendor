@@ -45,11 +45,6 @@ const Landing: React.FC = () => {
 
             {/* Scrollable Content */}
             <div className="relative z-10">
-                <div className="absolute top-0 right-0 mr-4 mt-4">
-                    <NxtBtn href="/login" className="cursor-pointer uppercase font-extralight px-4 py-2 rounded-2xl bg-black/10 backdrop-blur-lg shadow-[0_0_10px_rgba(6,182,212,0.75)] hover:inset-shadow-[0_0_20px_rgba(6,182,212,0.75)]">
-                        Login
-                    </NxtBtn>
-                </div>
                 {/* Hero Section */}
                 <div className="flex flex-col h-lvh bg-transparent text-default w-full justify-center items-center gap-2">
                     <div className="w-4/5 md:w-1/2 flex flex-col justify-center items-center space-y-4">
@@ -58,14 +53,12 @@ const Landing: React.FC = () => {
                             <p id="tagline" className="text-xl font-extralight">Grippendor, <em className="text-cyan-300">the</em> go to discord community management bot.</p>
                         </div>
                         <div id="bannerBtns" className="flex flex-row space-x-8">
-                            <button
-                                onClick={scrollToReadySection}
-                                className="px-2 py-1 rounded-xl bg-black/40 backdrop-blur-lg hover:shadow-[0_0_20px_rgba(6,182,212,0.75)] cursor-pointer transition-all duration-300">
-                                Get Started
-                            </button>
+                            <NxtBtn href="/login" className="cursor-pointer uppercase font-extralight px-4 py-2 rounded-2xl bg-black/10 backdrop-blur-lg shadow-[0_0_10px_rgba(6,182,212,0.75)] hover:inset-shadow-[0_0_20px_rgba(6,182,212,0.75)]">
+                                Dashboard
+                            </NxtBtn>
                             <button
                                 onClick={scrollToLearnMore}
-                                className="px-2 py-1 rounded-xl bg-black/40 backdrop-blur-lg hover:shadow-[0_0_20px_rgba(255,255,255,0.6)] cursor-pointer transition-all duration-300"
+                                className="px-4 py-2 rounded-2xl bg-black/40 backdrop-blur-lg hover:shadow-[0_0_20px_rgba(255,255,255,0.6)] cursor-pointer uppercase font-extralight"
                             >
                                 Learn More
                             </button>
