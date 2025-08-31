@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthProvider';
 
@@ -24,16 +25,17 @@ export default function Login() {
         setSuccess('');
         setIsLoading(true);
         if (!guildId || !password) {
-            setError('Please fill in all fields.');
+            toast.error('Please fill in all fields.');
             setIsLoading(false);
             return;
         }
         const result = await login(guildId, password);
         if (result.success) {
-            setSuccess('Login successful! Redirecting...');
+            toast.success('Login successful! Redirecting...');
             router.push('/dashboard');
         } else {
-            setError(result.error || 'Login failed.');
+            toast.error(result.error || 'Login failed.');
+            // setError(result.error || 'Login failed.');
         }
         setIsLoading(false);
     };
@@ -53,6 +55,19 @@ export default function Login() {
                     colorFrequency={0.25}
                 />
             </div>
+
+            <ToastContainer
+                position='top-right'
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={true}
+                closeOnClick={false}
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+            />
 
             <div className='relative z-10'>
                 <div className='flex flex-col h-lvh justify-center items-center'>
