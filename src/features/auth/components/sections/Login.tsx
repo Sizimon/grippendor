@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/context/AuthProvider';
+import { useAuth } from '@/features/auth/context/AuthProvider';
 
 import Prism from '@/bits/Prism';
 import GlassBox from '@/shared/GlassBox';

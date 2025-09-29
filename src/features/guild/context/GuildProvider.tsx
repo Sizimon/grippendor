@@ -1,8 +1,8 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useAuth } from '@/context/AuthProvider';
-import { guildAPI } from '@/api/api';
+import { useAuth } from '@/features/auth/context/AuthProvider';
+import { guildAPI } from '@/features/guild/api/api';
 import { GuildContextType, user, event, preset } from '@/types/types';
 
 const GuildContext = createContext<GuildContextType | undefined>(undefined); 

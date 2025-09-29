@@ -4,7 +4,7 @@ import Prism from "@/bits/Prism";
 import NxtBtn from "@/shared/NxtBtn"
 import GlassBox from "@/shared/GlassBox";
 import gsap from "gsap";
-import Logo from "../../public/Grippendor_Logo.png";
+import Logo from "@/images/Grippendor_Logo.png";
 
 const Landing: React.FC = () => {
     let tl = gsap.timeline();
