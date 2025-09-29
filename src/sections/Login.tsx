@@ -71,7 +71,7 @@ export default function Login() {
 
             <div className='relative z-10'>
                 <div className='flex flex-col h-lvh justify-center items-center'>
-                    <div className='w-3/4 md:w-1/4'>
+                    <div className='w-11/12 lg:w-2/12'>
                         <GlassBox>
                             <form onSubmit={handleLogin} className='p-4 flex flex-col'>
                                 <h1 className='text-center mb-4 text-2xl font-extralight uppercase'>Dashboard Access</h1>

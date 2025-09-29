@@ -4,6 +4,7 @@ import Prism from "@/bits/Prism";
 import NxtBtn from "@/shared/NxtBtn"
 import GlassBox from "@/shared/GlassBox";
 import gsap from "gsap";
+import Logo from "../../public/Grippendor_Logo.png";
 
 const Landing: React.FC = () => {
     let tl = gsap.timeline();
@@ -47,21 +48,23 @@ const Landing: React.FC = () => {
             <div className="relative z-10">
                 {/* Hero Section */}
                 <div className="flex flex-col h-lvh bg-transparent text-default w-full justify-center items-center gap-2">
-                    <div className="w-4/5 md:w-1/2 flex flex-col justify-center items-center space-y-4">
-                        <div className="text-center space-y-4">
-                            <h1 id="logo" className="text-4xl font-bold">LOGO</h1>
-                            <p id="tagline" className="text-xl font-extralight">Grippendor, <em className="text-cyan-300">the</em> go to discord community management bot.</p>
+                    <div className="w-4/5 md:w-1/2 flex flex-col justify-center items-center gap-16">
+                        <div>
+                            <img id="logo" src={Logo.src} alt="Grippendor Logo" className="w-64 h-64 mx-auto" />
                         </div>
-                        <div id="bannerBtns" className="flex flex-row space-x-8">
-                            <NxtBtn href="/login" className="cursor-pointer uppercase font-extralight px-4 py-2 rounded-2xl bg-black/10 backdrop-blur-lg shadow-[0_0_10px_rgba(6,182,212,0.75)] hover:inset-shadow-[0_0_20px_rgba(6,182,212,0.75)]">
-                                Dashboard
-                            </NxtBtn>
-                            <button
-                                onClick={scrollToLearnMore}
-                                className="px-4 py-2 rounded-2xl bg-black/40 backdrop-blur-lg hover:shadow-[0_0_20px_rgba(255,255,255,0.6)] cursor-pointer uppercase font-extralight"
-                            >
-                                Learn More
-                            </button>
+                        <div id="bannerBtns" className="flex flex-col text-center justify-center items-center gap-4">
+                            <p id="tagline" className="text-xl font-extralight">Grippendor, <em className="text-cyan-300">the</em> go to discord community management bot.</p>
+                            <div id="bannerBtns" className="flex flex-row space-x-8">
+                                <NxtBtn href="/login" className="cursor-pointer uppercase font-extralight px-4 py-2 rounded-2xl bg-black/10 backdrop-blur-lg shadow-[0_0_10px_rgba(6,182,212,0.75)] hover:inset-shadow-[0_0_20px_rgba(6,182,212,0.75)]">
+                                    Dashboard
+                                </NxtBtn>
+                                <button
+                                    onClick={scrollToLearnMore}
+                                    className="px-4 py-2 rounded-2xl bg-black/40 backdrop-blur-lg hover:shadow-[0_0_20px_rgba(255,255,255,0.6)] cursor-pointer uppercase font-extralight"
+                                >
+                                    Learn More
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
