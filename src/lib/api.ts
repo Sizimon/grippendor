@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/grippendor/api';
+const API_BASE_URL = '/grippendor-backend/api';
 
 // API REQUEST WRAPPER
 export const apiRequest = async (endpoint: string, options: RequestInit & { skip401Redirect?: boolean } = {}) => {
