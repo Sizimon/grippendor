@@ -32,7 +32,7 @@ export default function Login() {
         const result = await login(guildId, password);
         if (result.success) {
             toast.success('Login successful! Redirecting...');
-            router.push('/dashboard');
+            router.push(`/${guildId}`);
         } else {
             toast.error(result.error || 'Login failed.');
             // setError(result.error || 'Login failed.');
