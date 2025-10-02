@@ -22,11 +22,11 @@ export interface GuildContextType {
 
 export interface config {
     id: string;
-    channel: string;
-    color: string;
-    icon: string;
-    title: string;
-    banner: string;
+    channel?: string;
+    color?: string;
+    icon?: string;
+    title?: string;
+    banner?: string;
 }
 
 // USER TYPE

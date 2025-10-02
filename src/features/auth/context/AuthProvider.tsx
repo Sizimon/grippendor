@@ -11,15 +11,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [guild, setGuild] = useState<config | null>(null);
 
+    console.log(guild)
+
     useEffect(() => {
         const checkAuth = async () => {
             setIsLoading(true);
             try {
                 const data = await authAPI.me();
-                if (data && data.user) {
+                if (data && data.guildId) {
                     setIsAuthenticated(true);
                     setGuild({
-                        ...data.guild,
+                        id: data.guildId,
                     });
                 } else {
                     setIsAuthenticated(false);
@@ -44,11 +46,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 throw new Error('No user data returned from API');
             }
             setGuild({
-                ...data.guild,
+                id: data.guildId,
             });
             console.log('Guild data:', {
-                ...data.guild,
-            }); 
+                guildId: data.guildId,
+            });
             setIsAuthenticated(true);
             return { success: true };
         } catch (error) {
