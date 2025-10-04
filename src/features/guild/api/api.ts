@@ -2,27 +2,27 @@ import { apiRequest } from "@/lib/api";
 
 export const guildAPI = {
     fetchConfig: (guildId: string) =>
-        apiRequest(`/guilds/config/${guildId}`, {
+        apiRequest(`/config/${guildId}`, {
             method: 'GET',
             credentials: 'include', // Include cookies for session management
         }),
     fetchUserData: (guildId: string) =>
-        apiRequest(`/guilds/userdata/${guildId}`, {
+        apiRequest(`/userdata/${guildId}`, {
             method: 'GET',
             credentials: 'include', // Include cookies for session management
         }),
     fetchEventData: (guildId: string) =>
-        apiRequest(`/guilds/eventdata/${guildId}`, {
+        apiRequest(`/eventdata/${guildId}`, {
             method: 'GET',
             credentials: 'include', // Include cookies for session management
         }),
     fetchEventUserData: (guildId: string, eventId: string) =>
-        apiRequest(`/guilds/eventuserdata/${guildId}/${eventId}`, {
+        apiRequest(`/eventuserdata/${guildId}/${eventId}`, {
             method: 'GET',
             credentials: 'include', // Include cookies for session management
         }),
     fetchPresets: (guildId: string) =>
-        apiRequest(`/guilds/presets/${guildId}`, {
+        apiRequest(`/presets/${guildId}`, {
             method: 'GET',
             credentials: 'include', // Include cookies for session management
         })
