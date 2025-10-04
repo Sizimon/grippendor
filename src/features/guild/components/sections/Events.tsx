@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import GlassBox from '@/shared/GlassBox';
 import { useGuild } from '../../context/GuildProvider';
 import { formatDateTime } from '@/features/guild/utils/formatDate';
@@ -12,6 +12,9 @@ const Events: React.FC = () => {
     const { guildId } = useParams();
     const { events } = useGuild();
 
+    // State for event view toggle - default to upcoming
+    const [viewMode, setViewMode] = useState<'upcoming' | 'past'>('upcoming');
+
     // Separate upcoming and past events
     const now = new Date();
     const upcomingEvents = events
@@ -21,6 +24,9 @@ const Events: React.FC = () => {
     const pastEvents = events
         .filter(event => new Date(event.event_date) <= now)
         .sort((a, b) => new Date(b.event_date).getTime() - new Date(a.event_date).getTime());
+
+    // Get current events to display based on view mode
+    const currentEvents = viewMode === 'upcoming' ? upcomingEvents : pastEvents;
 
     const EventCard = ({ event }: { event: any }) => (
         <GlassBox className="p-6 space-y-4 h-fit" onClick={() => router.push(`/${guildId}/events/${event.id}`)}>
@@ -34,7 +40,7 @@ const Events: React.FC = () => {
                             📅 <span>{formatDateTime(event.event_date)}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            👥 <span>{event.max_attendees || 'Unlimited'} attendees</span>
+                            👥 Accepting more players {/* Add a property to events which allows admins to turn off RSVP if the event is full. Then display the current RSVP status */}
                         </div>
                         {event.description && (
                             <div className="flex items-start gap-2 mt-3">
@@ -81,7 +87,7 @@ const Events: React.FC = () => {
             </div>
 
             {/* Events Content */}
-            <div className="flex flex-col min-h-screen bg-transparent text-default w-full justify-start items-center gap-8 p-4 pt-8">
+            <div className="flex flex-col min-h-screen bg-transparent text-default w-full justify-start items-center gap-8 p-4 pt-8 relative z-10">
                 <div className="w-full max-w-6xl flex flex-col gap-8">
 
                     {/* Header Section */}
@@ -90,40 +96,78 @@ const Events: React.FC = () => {
                         <p className="text-lg font-light opacity-80">Manage and view all server events</p>
                     </div>
 
-                    {/* Action Bar */}
-                    <div className="flex justify-between items-center">
-                        <div className="text-sm opacity-70">
-                            {upcomingEvents.length} upcoming • {pastEvents.length} past events
+                    {/* Event Toggle Bar */}
+                    <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+                        {/* View Toggle */}
+                        <div className="flex bg-black/20 rounded-lg p-1 border border-white/10">
+                            <button
+                                onClick={() => setViewMode('upcoming')}
+                                className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${viewMode === 'upcoming'
+                                        ? 'bg-blue-500/30 text-blue-300 shadow-lg'
+                                        : 'text-white/70 hover:text-white/90 hover:bg-white/5'
+                                    }`}
+                            >
+                                🔥 Upcoming ({upcomingEvents.length})
+                            </button>
+                            <button
+                                onClick={() => setViewMode('past')}
+                                className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${viewMode === 'past'
+                                        ? 'bg-gray-500/30 text-gray-300 shadow-lg'
+                                        : 'text-white/70 hover:text-white/90 hover:bg-white/5'
+                                    }`}
+                            >
+                                📚 Past ({pastEvents.length})
+                            </button>
                         </div>
-                        <NxtBtn
-                            onClick={() => router.push(`/${guildId}/events/create`)}
-                            className="bg-green-500/20 hover:bg-green-500/30 transition-colors duration-200 rounded-lg py-2 px-6 text-sm"
-                        >
-                            ➕ Create Event
-                        </NxtBtn>
+
+                        {/* Total Count */}
+                        <div className="text-sm opacity-70">
+                            Total Events: {events.length}
+                        </div>
                     </div>
 
-                    {/* Upcoming Events Section */}
-                    {upcomingEvents.length > 0 && (
+                    {/* Events Grid */}
+                    {currentEvents.length > 0 ? (
                         <div className="space-y-6">
-                            <h2 className="text-xl font-semibold">🔥 Upcoming Events</h2>
+                            <div className="flex items-center justify-between">
+                                <h2 className="text-xl font-semibold">
+                                    {viewMode === 'upcoming' ? '🔥 Upcoming Events' : '📚 Past Events'}
+                                </h2>
+                                <div className="text-sm opacity-60">
+                                    {currentEvents.length} {currentEvents.length === 1 ? 'event' : 'events'}
+                                </div>
+                            </div>
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                {upcomingEvents.map((event, index) => (
+                                {currentEvents.map((event, index) => (
                                     <EventCard key={event.id || index} event={event} />
                                 ))}
                             </div>
                         </div>
-                    )}
-
-                    {/* Past Events Section */}
-                    {pastEvents.length > 0 && (
-                        <div className="space-y-6">
-                            <h2 className="text-xl font-semibold">📚 Past Events</h2>
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                {pastEvents.map((event, index) => (
-                                    <EventCard key={event.id || index} event={event} />
-                                ))}
-                            </div>
+                    ) : (
+                        /* Empty State for Current View */
+                        <div className="text-center py-16">
+                            <GlassBox className="p-8 max-w-md mx-auto">
+                                <div className="text-6xl mb-4">
+                                    {viewMode === 'upcoming' ? '📅' : '📚'}
+                                </div>
+                                <h3 className="text-xl font-semibold mb-2">
+                                    {viewMode === 'upcoming' ? 'No Upcoming Events' : 'No Past Events'}
+                                </h3>
+                                <p className="text-sm opacity-70 mb-6">
+                                    {viewMode === 'upcoming'
+                                        ? 'No events are currently scheduled. Create your first event using the "/create-event" command in Discord!'
+                                        : 'No past events to display. Once events are completed, they\'ll appear here.'
+                                    }
+                                </p>
+                                {viewMode === 'past' && upcomingEvents.length > 0 && (
+                                    <NxtBtn
+                                        onClick={() => setViewMode('upcoming')}
+                                        className="bg-blue-500/20 hover:bg-blue-500/30 transition-colors duration-200 rounded-lg py-2 px-4 text-sm"
+                                    >
+                                        View Upcoming Events
+                                    </NxtBtn>
+                                )}
+                            </GlassBox>
                         </div>
                     )}
 
