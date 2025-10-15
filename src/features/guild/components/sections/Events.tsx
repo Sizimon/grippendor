@@ -156,7 +156,7 @@ const Events: React.FC = () => {
                                 <p className="text-sm opacity-70 mb-6">
                                     {viewMode === 'upcoming'
                                         ? 'No events are currently scheduled. Create your first event using the "/create-event" command in Discord!'
-                                        : 'No past events to display. Once events are completed, they\'ll appear here.'
+                                        : "No past events to display. Once events are completed, they'll appear here."
                                     }
                                 </p>
                                 {viewMode === 'past' && upcomingEvents.length > 0 && (

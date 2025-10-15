@@ -11,7 +11,7 @@ const Dashboard: React.FC = () => {
     const router = useRouter();
     const { guildId } = useParams();
 
-    const { config, events } = useGuild();
+    const { config, events, members } = useGuild();
     const upcomingEvents = events
         .filter(event => new Date(event.event_date) > new Date()) // filter future events
         .sort((a, b) => new Date(a.event_date).getTime() - new Date(b.event_date).getTime()); // Sort by earliest
@@ -50,11 +50,11 @@ const Dashboard: React.FC = () => {
                             <h2 className="text-xl font-semibold mb-6 text-center">📊 Guild Statistics</h2>
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                                 <div className="text-center">
-                                    <div className="text-3xl font-bold text-blue-400">1,247</div>
+                                    <div className="text-3xl font-bold text-blue-400">{members.length}</div>
                                     <div className="text-sm opacity-70">Total Members</div>
                                 </div>
                                 <div className="text-center">
-                                    <div className="text-3xl font-bold text-purple-400">433</div>
+                                    <div className="text-3xl font-bold text-purple-400">{events.length}</div>
                                     <div className="text-sm opacity-70">Total Events</div>
                                 </div>
                                 <div className="text-center">
@@ -89,8 +89,8 @@ const Dashboard: React.FC = () => {
                                             <div className="text-xs opacity-60">
                                                 {formatDateTime(nextEvent.event_date)}
                                             </div>
-                                            <div className="text-xs opacity-60">
-                                                attendees
+                                            <div className="text-xs opacity-60 text-green-400">
+                                                Accepting RSVPs
                                             </div>
                                         </div>
                                     ) : (
