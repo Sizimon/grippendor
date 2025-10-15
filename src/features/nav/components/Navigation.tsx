@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
+import { useAuth } from '@/features/auth/context/AuthProvider';
 
 import { useRouter } from 'next/navigation';
 
@@ -10,6 +11,8 @@ export function Navigation({
         setNavOpen: (open: boolean) => void;
     }) {
     const router = useRouter();
+    const { guild } = useAuth();
+    if (!guild) return null;
 
     // Nav Ref for animation
     const navRef = useRef<HTMLDivElement>(null);
@@ -61,25 +64,25 @@ export function Navigation({
                 <div className='flex flex-col text-2xl justify-evenly h-full'>
                     <button 
                     className='uppercase hover:text-cyan-300 transition-color duration-400 cursor-pointer' 
-                    onClick={() => router.push('/')}
+                    onClick={() => router.push(`/${guild.id}`)}
                 >
                         Dashboard
                     </button>
                     <button 
                         className='uppercase hover:text-cyan-300 transition-color duration-400 cursor-pointer'
-                        onClick={() => router.push('/events')}
+                        onClick={() => router.push(`/${guild.id}/events`)}
                     >
                         Events
                     </button>
                     <button 
                         className='uppercase hover:text-cyan-300 transition-color duration-400 cursor-pointer'
-                        onClick={() => router.push('/members')}
+                        onClick={() => router.push(`/${guild.id}/members`)}
                     >
                         Members
                     </button>
                     <button 
                         className='uppercase hover:text-cyan-300 transition-color duration-400 cursor-pointer'
-                        onClick={() => router.push('/party-planner')}
+                        onClick={() => router.push(`/${guild.id}/party-planner`)}
                     >
                         Party Planner
                     </button>
