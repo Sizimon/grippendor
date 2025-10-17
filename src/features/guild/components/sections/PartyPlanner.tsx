@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Prism from "@/bits/Prism";
 import GlassBox from "@/shared/GlassBox";
 import { useGuild } from "../../context/GuildProvider";
+import { createParties } from '../../utils/createParties';
 
 interface CustomSelectProps {
     options: Array<{ id: string | number; name: string; }>;
@@ -206,7 +207,8 @@ export function PartyPlanner() {
                             <button
                                 type="button"
                                 className="bg-green-500/20 hover:bg-green-500/30 transition-colors duration-200 rounded-lg py-3 px-8 font-semibold text-green-300 border border-green-500/30 hover:border-green-500/50 cursor-pointer"
-                                disabled={true} // Enable when preset is also selected
+                                disabled={!selectedPresetId}
+                                onClick={() => createParties(selectedEvent, selectedPreset)}
                             >
                                 🎯 Generate Parties
                             </button>
