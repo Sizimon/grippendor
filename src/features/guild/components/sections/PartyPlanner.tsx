@@ -12,10 +12,10 @@ interface CustomSelectProps {
     className?: string;
 }
 
-const CustomSelect: React.FC<CustomSelectProps> = ({ 
-    options, 
-    value, 
-    onChange, 
+const CustomSelect: React.FC<CustomSelectProps> = ({
+    options,
+    value,
+    onChange,
     placeholder = "Select an option...",
     className = ""
 }) => {
@@ -54,10 +54,10 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
                 <span className={selectedOption ? "text-white" : "text-white/60"}>
                     {selectedOption ? selectedOption.name : placeholder}
                 </span>
-                <svg 
+                <svg
                     className={`w-5 h-5 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
-                    fill="none" 
-                    stroke="currentColor" 
+                    fill="none"
+                    stroke="currentColor"
                     viewBox="0 0 24 24"
                 >
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -73,9 +73,8 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
                                 key={option.id}
                                 type="button"
                                 onClick={() => handleSelect(option)}
-                                className={`w-full text-left p-3 hover:bg-white/10 transition-colors duration-150 first:rounded-t-lg last:rounded-b-lg border-b border-white/10 last:border-b-0 ${
-                                    selectedOption?.id === option.id ? 'bg-blue-500/20 text-blue-300' : 'text-white'
-                                }`}
+                                className={`w-full text-left p-3 hover:bg-white/10 transition-colors duration-150 first:rounded-t-lg last:rounded-b-lg border-b border-white/10 last:border-b-0 ${selectedOption?.id === option.id ? 'bg-blue-500/20 text-blue-300' : 'text-white'
+                                    }`}
                             >
                                 {option.name}
                             </button>
@@ -93,11 +92,17 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
 
 export function PartyPlanner() {
     const { events, presets } = useGuild();
+    const [parties, setParties] = useState<any[]>([]); // Replace 'any' with a defined party type later REMEMBER
     const [selectedEventId, setSelectedEventId] = useState<string | number>('');
-    
+    const [selectedPresetId, setSelectedPresetId] = useState<string | number>('');
+
     if (!events) return null;
+    if (!presets) return null;
+
+    // Debug logs
 
     console.log('Presets:', presets);
+    console.log('Events:', events);
 
     // Filter to only upcoming events with RSVPs
     const upcomingEvents = events
@@ -105,6 +110,9 @@ export function PartyPlanner() {
         .sort((a, b) => new Date(a.event_date).getTime() - new Date(b.event_date).getTime());
 
     const selectedEvent = upcomingEvents.find(event => event.id === selectedEventId);
+
+    const matchedPresets = presets.filter(p => p.game_role_name === selectedEvent?.game_name);
+    const selectedPreset = matchedPresets.find(preset => preset.id === selectedPresetId);
 
     return (
         <>
@@ -126,7 +134,7 @@ export function PartyPlanner() {
             {/* Planner Content */}
             <div className="flex flex-col min-h-screen bg-transparent text-default w-full justify-start items-center gap-8 p-4 pt-8 relative z-10">
                 <div className="w-full max-w-4xl flex flex-col gap-8">
-                    
+
                     {/* Header Section */}
                     <div className="text-center">
                         <h1 className="text-3xl md:text-4xl font-extralight mb-2">🎯 Party Maker</h1>
@@ -136,7 +144,7 @@ export function PartyPlanner() {
                     {/* Event Selection */}
                     <GlassBox className="p-6">
                         <h2 className="text-xl font-semibold mb-4">📅 Select Event</h2>
-                        
+
                         {upcomingEvents.length > 0 ? (
                             <div className="space-y-4">
                                 <CustomSelect
@@ -178,9 +186,16 @@ export function PartyPlanner() {
                         <GlassBox className="p-6">
                             <h2 className="text-xl font-semibold mb-4">⚙️ Select Party Preset</h2>
                             <div className="text-center py-8 opacity-60">
-                                <div className="text-4xl mb-4">🛠️</div>
-                                <p className="text-sm mb-2">Preset selection coming soon</p>
-                                <p className="text-xs opacity-60">Will display bot's predefined party presets</p>
+                                <CustomSelect
+                                    options={matchedPresets.map(preset => ({
+                                        id: preset.id,
+                                        name: preset.preset_name
+                                    }))}
+                                    value={selectedPresetId}
+                                    onChange={setSelectedPresetId}
+                                    placeholder="Choose a party preset..."
+                                    className="w-full"
+                                />
                             </div>
                         </GlassBox>
                     )}
@@ -190,7 +205,7 @@ export function PartyPlanner() {
                         <GlassBox className="p-6 text-center">
                             <button
                                 type="button"
-                                className="bg-green-500/20 hover:bg-green-500/30 transition-colors duration-200 rounded-lg py-3 px-8 font-semibold text-green-300 border border-green-500/30 hover:border-green-500/50"
+                                className="bg-green-500/20 hover:bg-green-500/30 transition-colors duration-200 rounded-lg py-3 px-8 font-semibold text-green-300 border border-green-500/30 hover:border-green-500/50 cursor-pointer"
                                 disabled={true} // Enable when preset is also selected
                             >
                                 🎯 Generate Parties
