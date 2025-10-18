@@ -1,12 +1,10 @@
 'use client';
-import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { CiMenuBurger } from "react-icons/ci";
 import { Navigation } from "./components/Navigation";
 import { useAuth } from "@/features/auth/context/AuthProvider";
 
 export const NavWrapper = () => {
-    const router = useRouter();
     const { isAuthenticated } = useAuth();
     const [navOpen, setNavOpen] = useState(false);
     console.log(navOpen)

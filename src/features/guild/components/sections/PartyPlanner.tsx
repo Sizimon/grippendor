@@ -3,7 +3,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import Prism from "@/bits/Prism";
 import GlassBox from "@/shared/GlassBox";
 import { useGuild } from "../../context/GuildProvider";
+import { useAuth } from '@/features/auth/context/AuthProvider';
 import { createParties } from '../../utils/createParties';
+import { guildAPI } from '../../api/api';
 
 interface CustomSelectProps {
     options: Array<{ id: string | number; name: string; }>;
@@ -92,28 +94,46 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
 };
 
 export function PartyPlanner() {
+    const { fetchEventUserData } = guildAPI;
     const { events, presets } = useGuild();
+    const { guild } = useAuth();
     const [parties, setParties] = useState<any[]>([]); // Replace 'any' with a defined party type later REMEMBER
     const [selectedEventId, setSelectedEventId] = useState<string | number>('');
     const [selectedPresetId, setSelectedPresetId] = useState<string | number>('');
 
-    if (!events) return null;
-    if (!presets) return null;
 
+    const guildId = guild?.id;
+    const hasRequiredData = events && presets && guildId;
     // Debug logs
 
     console.log('Presets:', presets);
     console.log('Events:', events);
 
     // Filter to only upcoming events with RSVPs
-    const upcomingEvents = events
+    const upcomingEvents = hasRequiredData ? events
         .filter(event => new Date(event.event_date) > new Date())
-        .sort((a, b) => new Date(a.event_date).getTime() - new Date(b.event_date).getTime());
+        .sort((a, b) => new Date(a.event_date).getTime() - new Date(b.event_date).getTime())
+        : [];
 
     const selectedEvent = upcomingEvents.find(event => event.id === selectedEventId);
-
-    const matchedPresets = presets.filter(p => p.game_role_name === selectedEvent?.game_name);
+    const matchedPresets = hasRequiredData && selectedEvent 
+    ? presets.filter(p => p.game_role_name === selectedEvent?.game_name) 
+    : [];
     const selectedPreset = matchedPresets.find(preset => preset.id === selectedPresetId);
+
+    useEffect(() => {
+        if (!selectedEvent || !selectedPreset || !guildId) return;
+        const fetchData = async () => {
+            try {
+                const eventUserData = await fetchEventUserData(guildId, selectedEvent.id);
+                console.log('Event User Data:', eventUserData);
+                // Process eventUserData as needed
+            } catch (error) {
+                console.error('Error fetching event user data:', error);
+            }
+        }
+        fetchData();
+    }, [selectedEventId, selectedPresetId]);
 
     return (
         <>
