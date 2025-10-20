@@ -98,8 +98,11 @@ export function PartyPlanner() {
     const { events, presets } = useGuild();
     const { guild } = useAuth();
     const [parties, setParties] = useState<any[]>([]); // Replace 'any' with a defined party type later REMEMBER
+    const [unusedMembers, setUnusedMembers] = useState<any[]>([]); // Replace 'any' with a defined user type later REMEMBER
+    const [showResults, setShowResults] = useState(false); // Replace 'any' with a defined user type later REMEMBER
     const [selectedEventId, setSelectedEventId] = useState<string | number>('');
     const [selectedPresetId, setSelectedPresetId] = useState<string | number>('');
+    const [eventParticipants, setEventParticipants] = useState<any[]>([]); // Replace 'any' with a defined user type later REMEMBER
 
 
     const guildId = guild?.id;
@@ -116,9 +119,9 @@ export function PartyPlanner() {
         : [];
 
     const selectedEvent = upcomingEvents.find(event => event.id === selectedEventId);
-    const matchedPresets = hasRequiredData && selectedEvent 
-    ? presets.filter(p => p.game_role_name === selectedEvent?.game_name) 
-    : [];
+    const matchedPresets = hasRequiredData && selectedEvent
+        ? presets.filter(p => p.game_role_name === selectedEvent?.game_name)
+        : [];
     const selectedPreset = matchedPresets.find(preset => preset.id === selectedPresetId);
 
     useEffect(() => {
@@ -126,14 +129,22 @@ export function PartyPlanner() {
         const fetchData = async () => {
             try {
                 const eventUserData = await fetchEventUserData(guildId, selectedEvent.id);
-                console.log('Event User Data:', eventUserData);
-                // Process eventUserData as needed
+                setEventParticipants(eventUserData.data);
             } catch (error) {
                 console.error('Error fetching event user data:', error);
             }
         }
         fetchData();
     }, [selectedEventId, selectedPresetId]);
+
+    const handleGenerateParties = () => {
+        if (!selectedEvent || !selectedPreset || !eventParticipants.length) return;
+
+        const result = createParties(selectedEvent, selectedPreset, eventParticipants);
+        setParties(result.parties);
+        setUnusedMembers(result.unusedMembers);
+        setShowResults(true);
+    };
 
     return (
         <>
@@ -228,7 +239,7 @@ export function PartyPlanner() {
                                 type="button"
                                 className="bg-green-500/20 hover:bg-green-500/30 transition-colors duration-200 rounded-lg py-3 px-8 font-semibold text-green-300 border border-green-500/30 hover:border-green-500/50 cursor-pointer"
                                 disabled={!selectedPresetId}
-                                onClick={() => createParties(selectedEvent, selectedPreset)}
+                                onClick={handleGenerateParties}
                             >
                                 🎯 Generate Parties
                             </button>
@@ -236,6 +247,65 @@ export function PartyPlanner() {
                                 This will trigger your Discord bot's party maker command
                             </p>
                         </GlassBox>
+                    )}
+
+                    {/* Results Section */}
+                    {showResults && (
+                        <>
+                            {/* Generated Parties */}
+                            <GlassBox className="p-6">
+                                <h2 className="text-xl font-semibold mb-4">🎉 Generated Parties</h2>
+                                <div className="space-y-4">
+                                    {parties.map((party) => (
+                                        <div key={party.id} className="bg-black/20 rounded-lg p-4 border border-white/10">
+                                            <h3 className="font-semibold mb-3">Party {party.id}</h3>
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                                {party.members.map((member: any, index: number) => (
+                                                    <div key={index} className="flex justify-between items-center bg-black/20 rounded p-2">
+                                                        <span className="text-sm">{member.name}</span>
+                                                        <span className={`text-xs px-2 py-1 rounded ${member.role === 'DPS' ? 'bg-red-500/20 text-red-300' :
+                                                                member.role === 'HEALER' ? 'bg-green-500/20 text-green-300' :
+                                                                    member.role === 'TANK' ? 'bg-blue-500/20 text-blue-300' :
+                                                                        'bg-gray-500/20 text-gray-300'
+                                                            }`}>
+                                                            {member.role}
+                                                        </span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </GlassBox>
+
+                            {/* Unused Members */}
+                            {unusedMembers.length > 0 && (
+                                <GlassBox className="p-6">
+                                    <h2 className="text-xl font-semibold mb-4">👤 Unused Members</h2>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                                        {unusedMembers.map((member: any, index: number) => (
+                                            <div key={index} className="bg-black/20 rounded p-2 border border-white/10">
+                                                <div className="text-sm font-medium">{member.name}</div>
+                                                <div className="text-xs opacity-60">
+                                                    Roles: {member.roles.join(', ')}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </GlassBox>
+                            )}
+
+                            {/* Reset Button */}
+                            <GlassBox className="p-6 text-center">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowResults(false)}
+                                    className="bg-gray-500/20 hover:bg-gray-500/30 transition-colors duration-200 rounded-lg py-2 px-6 text-gray-300 border border-gray-500/30"
+                                >
+                                    🔄 Generate New Parties
+                                </button>
+                            </GlassBox>
+                        </>
                     )}
                 </div>
             </div>
