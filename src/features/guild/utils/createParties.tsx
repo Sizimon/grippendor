@@ -87,7 +87,7 @@ export const createParties = (event: any, preset: any, participants: any[]) => {
             const participant = availableParticipants[j];
             party.members.push({
                 name: participant.name as string,
-                role: 'FLEX',
+                role: 'Any',
                 availableRoles: participant.roles as string[], // Include all available roles
                 userId: participant.user_id as string
             });

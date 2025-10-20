@@ -21,15 +21,6 @@ export const RoleDropdown: React.FC<{
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    const getRoleColor = (role: string) => {
-        switch (role) {
-            case 'DPS': return 'bg-red-500/30 text-red-300 border-red-500/30';
-            case 'HEALER': return 'bg-green-500/30 text-green-300 border-green-500/30';
-            case 'TANK': return 'bg-blue-500/30 text-blue-300 border-blue-500/30';
-            default: return 'bg-gray-500/30 text-gray-300 border-gray-500/30';
-        }
-    };
-
     return (
         <div className={`relative ${className}`} ref={dropdownRef}>
             <button
@@ -38,7 +29,7 @@ export const RoleDropdown: React.FC<{
                     e.stopPropagation();
                     setIsOpen(!isOpen);
                 }}
-                className={`text-xs px-2 py-1 rounded font-semibold border transition-all duration-200 hover:scale-105 ${getRoleColor(currentRole)}`}
+                className='text-xs px-2 py-1 rounded font-semibold border transition-all duration-200 hover:scale-105'
             >
                 {currentRole}
                 <svg className="inline w-3 h-3 ml-1" fill="currentColor" viewBox="0 0 20 20">
@@ -57,23 +48,23 @@ export const RoleDropdown: React.FC<{
                                 onChange(role);
                                 setIsOpen(false);
                             }}
-                            className={`w-full text-left p-2 text-xs hover:bg-white/10 transition-colors duration-150 first:rounded-t-lg last:rounded-b-lg ${getRoleColor(role).replace('border-', '').replace('/30', '/20')}`}
+                            className='w-full text-left p-2 text-xs hover:bg-white/10 transition-colors duration-150 first:rounded-t-lg last:rounded-b-lg'
                         >
                             {role}
                         </button>
                     ))}
-                    {/* Add FLEX option if not in available roles */}
-                    {!availableRoles.includes('FLEX') && (
+                    {/* Add Any option if not in available roles */}
+                    {!availableRoles.includes('Any') && (
                         <button
                             type="button"
                             onClick={(e) => {
                                 e.stopPropagation();
-                                onChange('FLEX');
+                                onChange('Any');
                                 setIsOpen(false);
                             }}
                             className="w-full text-left p-2 text-xs hover:bg-white/10 transition-colors duration-150 last:rounded-b-lg bg-gray-500/20 text-gray-300"
                         >
-                            FLEX
+                            Any
                         </button>
                     )}
                 </div>
