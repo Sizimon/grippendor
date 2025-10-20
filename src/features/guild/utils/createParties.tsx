@@ -1,6 +1,8 @@
 interface PartyMember {
     name: string;
     role: string;
+    availableRoles: string[];
+    userId: string;
 }
 
 interface Party {
@@ -12,6 +14,7 @@ interface Party {
 interface UnusedMember {
     name: string;
     roles: string[];
+    userId: string;
 }
 
 
@@ -66,7 +69,9 @@ export const createParties = (event: any, preset: any, participants: any[]) => {
                 const participant = availableForRole[j];
                 party.members.push({
                     name: participant.name as string,
-                    role: roleReq.roleName as string
+                    role: roleReq.roleName as string,
+                    availableRoles: participant.roles as string[], // Include all available roles
+                    userId: participant.user_id as string
                 });
                 usedParticipants.add(participant.user_id);
             }
@@ -82,7 +87,9 @@ export const createParties = (event: any, preset: any, participants: any[]) => {
             const participant = availableParticipants[j];
             party.members.push({
                 name: participant.name as string,
-                role: 'FLEX'
+                role: 'FLEX',
+                availableRoles: participant.roles as string[], // Include all available roles
+                userId: participant.user_id as string
             });
             usedParticipants.add(participant.user_id);
         }
@@ -90,10 +97,14 @@ export const createParties = (event: any, preset: any, participants: any[]) => {
         parties.push(party);
     }
 
-    // Get unused members (move this outside the loop)
+    // Identify unused members
     const unusedMembers: UnusedMember[] = participants
         .filter(p => !usedParticipants.has(p.user_id))
-        .map(p => ({ name: p.name, roles: p.roles }));
+        .map(p => ({ 
+            name: p.name, 
+            roles: p.roles,
+            userId: p.user_id 
+        }));
 
     console.log('Generated parties:', parties);
     console.log('Unused members:', unusedMembers);
