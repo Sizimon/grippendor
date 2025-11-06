@@ -1,7 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { AuthContextType, config } from '@/types/types';
+import { AuthContextType, guild } from '@/types/types';
 import { authAPI } from '@/features/auth/api/api';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -9,17 +9,17 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [guild, setGuild] = useState<config | null>(null);
+    const [guild, setGuild] = useState<guild | null>(null);
 
     useEffect(() => {
         const checkAuth = async () => {
             setIsLoading(true);
             try {
                 const data = await authAPI.me();
-                if (data && data.user) {
+                if (data && data.guildId) {
                     setIsAuthenticated(true);
                     setGuild({
-                        ...data.guild,
+                        id: data.guildId,
                     });
                 } else {
                     setIsAuthenticated(false);
@@ -44,11 +44,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 throw new Error('No user data returned from API');
             }
             setGuild({
-                ...data.guild,
+                id: data.guildId,
             });
             console.log('Guild data:', {
-                ...data.guild,
-            }); 
+                guildId: data.guildId,
+            });
             setIsAuthenticated(true);
             return { success: true };
         } catch (error) {

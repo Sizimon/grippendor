@@ -4,8 +4,8 @@ export interface AuthContextType {
     isAuthenticated: boolean;
     setIsAuthenticated: (isAuthenticated: boolean) => void;
     isLoading: boolean;
-    guild: config | null;
-    setGuild: (guild: config | null) => void;
+    guild: guild | null;
+    setGuild: (guild: guild | null) => void;
     login: (guildId: string, password: string) => Promise<{ success: boolean; error?: string }>;
     logout: () => void;
 }
@@ -13,6 +13,7 @@ export interface AuthContextType {
 // GUILD CONTEXT TYPE
 
 export interface GuildContextType {
+    config: config | null;
     members: user[],
     events: event[],
     presets: preset[]
@@ -20,13 +21,16 @@ export interface GuildContextType {
 
 // GUILD CONFIG TYPE
 
-export interface config {
+export interface guild {
     id: string;
-    channel: string;
-    color: string;
-    icon: string;
-    title: string;
-    banner: string;
+}
+
+export interface config {
+    channel?: string;
+    color?: string; // remove later
+    icon?: string; // remove  later?
+    title?: string;
+    banner?: string; // remove later
 }
 
 // USER TYPE
