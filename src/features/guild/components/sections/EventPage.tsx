@@ -18,7 +18,6 @@ const EventPage: React.FC = () => {
 
 
     const [eventParticipants, setEventParticipants] = useState<any[]>([]);
-    const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
     console.log('Event Participants:', eventParticipants);
 
@@ -29,9 +28,6 @@ const EventPage: React.FC = () => {
         // Convert both to strings for comparison since URL params are always strings
         return String(e.id) === String(eventId);
     });
-
-    // Image slideshow state - ensure eventImages is always an array
-    const eventImages = Array.isArray(event?.image_urls) ? event.image_urls : [];
 
     useEffect(() => {
         if (event && guildId) {
@@ -47,29 +43,8 @@ const EventPage: React.FC = () => {
         }
     }, [event, guildId]);
 
-    // Auto-advance slideshow
-    useEffect(() => {
-        if (eventImages.length > 1) {
-            const interval = setInterval(() => {
-                setCurrentImageIndex(prev => (prev + 1) % eventImages.length);
-            }, 5000);
 
-            return () => clearInterval(interval);
-        }
-    }, [eventImages.length]);
-
-    const nextImage = () => {
-        if (eventImages.length > 0) {
-            setCurrentImageIndex(prev => (prev + 1) % eventImages.length);
-        }
-    };
-
-    const prevImage = () => {
-        if (eventImages.length > 0) {
-            setCurrentImageIndex(prev => (prev - 1 + eventImages.length) % eventImages.length);
-        }
-    };
-
+    // Function which generates a consistent color for a makeshift avatar based on user name
     const generateUserColor = (name: string) => {
         const colors = [
             'from-blue-500 to-purple-600',
@@ -82,11 +57,11 @@ const EventPage: React.FC = () => {
             'from-indigo-500 to-blue-600',
         ];
 
-        // Generate consistent index based on name
         const hash = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
         return colors[hash % colors.length];
     };
 
+    // Function to generate HSL-based colors for roles
     const generateRoleColorHSL = (role: string) => {
         // Generate consistent hue based on role name
         const hash = role.toLowerCase().split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
@@ -99,6 +74,7 @@ const EventPage: React.FC = () => {
         };
     };
 
+    // Loading state - check if guild is still loading
     if (!guildId) {
         return (
             <>
@@ -212,17 +188,6 @@ const EventPage: React.FC = () => {
             {/* Event Page Content */}
             <div className="relative z-10 flex flex-col min-h-screen bg-transparent text-default w-full justify-start items-center gap-8 p-4 pt-8">
                 <div className="w-full max-w-6xl flex flex-col gap-8">
-
-                    {/* Back Navigation */}
-                    <div className="flex items-center gap-2">
-                        <NxtBtn
-                            onClick={() => router.push(`/${guildId}/events`)}
-                            className="bg-white/10 hover:bg-white/20 transition-colors duration-200 rounded-lg py-2 px-4 text-sm cursor-pointer"
-                        >
-                            ← Back to Events
-                        </NxtBtn>
-                    </div>
-
                     {/* Event Header - Title, Time & Summary */}
                     <div className="text-center space-y-4">
                         <div className="space-y-2">
@@ -363,75 +328,6 @@ const EventPage: React.FC = () => {
                             )}
                         </GlassBox>
                     </div>
-
-                    {/* Full Width Image Gallery Section - Only if images exist and is array */}
-                    {eventImages.length > 0 && (
-                        <div className="max-w-5xl mx-auto w-full">
-                            <GlassBox className="p-6">
-                                <h2 className="text-xl font-semibold mb-6 text-center">🖼️ Event Gallery</h2>
-
-                                <div className="space-y-6">
-                                    {/* Main Image Display */}
-                                    <div className="relative aspect-video rounded-lg overflow-hidden bg-black/20">
-                                        <img
-                                            src={eventImages[currentImageIndex]}
-                                            alt={`Event image ${currentImageIndex + 1}`}
-                                            className="w-full h-full object-cover"
-                                            onError={(e) => {
-                                                e.currentTarget.style.display = 'none';
-                                            }}
-                                        />
-
-                                        {/* Navigation Arrows */}
-                                        {eventImages.length > 1 && (
-                                            <>
-                                                <button
-                                                    onClick={prevImage}
-                                                    className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/60 hover:bg-black/80 rounded-full p-3 transition-colors"
-                                                >
-                                                    ⬅️
-                                                </button>
-                                                <button
-                                                    onClick={nextImage}
-                                                    className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/60 hover:bg-black/80 rounded-full p-3 transition-colors"
-                                                >
-                                                    ➡️
-                                                </button>
-                                            </>
-                                        )}
-                                        {/* Image Counter */}
-                                        {eventImages.length > 1 && (
-                                            <div className="absolute bottom-4 right-4 bg-black/70 rounded-full px-4 py-2 text-sm">
-                                                {currentImageIndex + 1} / {eventImages.length}
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    {/* Thumbnail Grid - Show all images as thumbnails */}
-                                    {eventImages.length > 1 && (
-                                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                                            {eventImages.map((image, index) => (
-                                                <button
-                                                    key={index}
-                                                    onClick={() => setCurrentImageIndex(index)}
-                                                    className={`aspect-square rounded-lg overflow-hidden border-2 transition-all hover:scale-105 ${index === currentImageIndex
-                                                        ? 'border-blue-400 ring-2 ring-blue-400/30'
-                                                        : 'border-white/20 hover:border-white/40'
-                                                        }`}
-                                                >
-                                                    <img
-                                                        src={image}
-                                                        alt={`Thumbnail ${index + 1}`}
-                                                        className="w-full h-full object-cover"
-                                                    />
-                                                </button>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
-                            </GlassBox>
-                        </div>
-                    )}
                 </div>
             </div>
         </>

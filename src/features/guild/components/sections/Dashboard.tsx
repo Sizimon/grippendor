@@ -1,7 +1,6 @@
 'use client';
 import React from "react";
 import Prism from "@/bits/Prism";
-import NxtBtn from "@/shared/NxtBtn";
 import GlassBox from "@/shared/GlassBox";
 import { useGuild } from "../../context/GuildProvider";
 import { formatDateTime } from '@/features/guild/utils/formatDate';

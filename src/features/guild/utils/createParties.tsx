@@ -19,6 +19,7 @@ interface UnusedMember {
 
 
 export const createParties = (event: any, preset: any, participants: any[]) => {
+    // Debug logs
     console.log('Creating parties with the following data:');
     console.log('Event:', event);
     console.log('Preset:', preset);
