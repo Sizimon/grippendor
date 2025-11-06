@@ -11,13 +11,13 @@ const Dashboard: React.FC = () => {
     const router = useRouter();
     const { guildId } = useParams();
 
-    const { config, events, members } = useGuild();
+    const { config, events, members, presets } = useGuild();
+
     const upcomingEvents = events
         .filter(event => new Date(event.event_date) > new Date()) // filter future events
         .sort((a, b) => new Date(a.event_date).getTime() - new Date(b.event_date).getTime()); // Sort by earliest
 
     const nextEvent = upcomingEvents[0]
-    console.log('Next Event:', nextEvent);
     return (
         <>
             {/* Fixed Prism Background */}
@@ -73,7 +73,7 @@ const Dashboard: React.FC = () => {
                     <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl">
 
                         {/* Events Card */}
-                        <GlassBox className="hover:scale-105 transition-transform duration-300 cursor-pointer">
+                        <GlassBox onClick={() => router.push(`/${guildId}/events`)} className="hover:scale-105 transition-transform duration-300 cursor-pointer">
                             <div className="p-6 space-y-4">
                                 <div className="flex items-center justify-between">
                                     <h3 className="text-xl font-semibold">📅 Events</h3>
@@ -100,17 +100,17 @@ const Dashboard: React.FC = () => {
                                         </div>
                                     )}
                                 </div>
-                                <NxtBtn
+                                {/* <NxtBtn
                                     onClick={() => router.push(`/${guildId}/events`)}
                                     className="w-full mt-4"
                                 >
                                     View Events
-                                </NxtBtn>
+                                </NxtBtn> */}
                             </div>
                         </GlassBox>
 
                         {/* Members Card */}
-                        <GlassBox className="hover:scale-105 transition-transform duration-300 cursor-pointer">
+                        <GlassBox onClick={() => router.push(`/${guildId}/members`)} className="hover:scale-105 transition-transform duration-300 cursor-pointer">
                             <div className="p-6 space-y-4">
                                 <div className="flex items-center justify-between">
                                     <h3 className="text-xl font-semibold">👥 Members</h3>
@@ -123,34 +123,34 @@ const Dashboard: React.FC = () => {
                                         <div>Average Event Attendance: <span className="font-semibold">18 people</span></div>
                                     </div>
                                 </div>
-                                <NxtBtn
+                                {/* <NxtBtn
                                     href="/dashboard/party-maker"
                                     className="w-full mt-4"
                                 >
                                     View Members
-                                </NxtBtn>
+                                </NxtBtn> */}
                             </div>
                         </GlassBox>
 
-                        {/* Party Maker Card */}
-                        <GlassBox className="hover:scale-105 transition-transform duration-300 cursor-pointer">
+                        {/* Party Planner Card */}
+                        <GlassBox onClick={() => router.push(`/${guildId}/party-planner`)} className="hover:scale-105 transition-transform duration-300 cursor-pointer">
                             <div className="p-6 space-y-4">
                                 <div className="flex items-center justify-between">
-                                    <h3 className="text-xl font-semibold">🎯 Party Maker</h3>
+                                    <h3 className="text-xl font-semibold">🎯 Party Planner</h3>
                                 </div>
                                 <div className="space-y-2">
                                     <p className="text-sm opacity-70">Create parties for your events using custom presets!</p>
                                     <div className="text-xs opacity-60">
-                                        <div>Available Presets: <span className="font-semibold">5 presets</span></div>
-                                        <div>Upcoming Events: <span className="font-semibold">7 events</span></div>
+                                        <div>Available Presets: <span className="font-semibold">{presets.length} presets</span></div>
+                                        <div>Upcoming Events: <span className="font-semibold">{upcomingEvents.length} events</span></div>
                                     </div>
                                 </div>
-                                <NxtBtn
-                                    href="/dashboard/party-maker"
+                                {/* <NxtBtn
+                                    href="/dashboard/party-planner"
                                     className="w-full mt-4"
                                 >
-                                    Open Party Maker
-                                </NxtBtn>
+                                    Open Party Planner
+                                </NxtBtn> */}
                             </div>
                         </GlassBox>
                     </div>
