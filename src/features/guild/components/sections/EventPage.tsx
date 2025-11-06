@@ -1,18 +1,28 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import GlassBox from '@/shared/GlassBox';
 import NxtBtn from '@/shared/NxtBtn';
 import Prism from "@/bits/Prism";
 import { useGuild } from '../../context/GuildProvider';
+import { useAuth } from '@/features/auth/context/AuthProvider';
 import { formatDateTime } from '@/features/guild/utils/formatDate';
+import { guildAPI } from '../../api/api';
 
 const EventPage: React.FC = () => {
     const router = useRouter();
-    const { guildId, eventId } = useParams();
+    const { eventId } = useParams();
+    const { fetchEventUserData } = guildAPI;
     const { events } = useGuild();
+    const { guild } = useAuth();
 
-    console.log(guildId)
+
+    const [eventParticipants, setEventParticipants] = useState<any[]>([]);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+    console.log('Event Participants:', eventParticipants);
+
+    const guildId = guild?.id;
 
     // Find the specific event - handle both string and number IDs
     const event = events.find(e => {
@@ -21,8 +31,21 @@ const EventPage: React.FC = () => {
     });
 
     // Image slideshow state - ensure eventImages is always an array
-    const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const eventImages = Array.isArray(event?.image_urls) ? event.image_urls : [];
+
+    useEffect(() => {
+        if (event && guildId) {
+            const fetchData = async () => {
+                try {
+                    const eventUserData = await fetchEventUserData(guildId, event.id);
+                    setEventParticipants(eventUserData.data || []);
+                } catch (error) {
+                    console.error("Error fetching event participants:", error);
+                }
+            };
+            fetchData();
+        }
+    }, [event, guildId]);
 
     // Auto-advance slideshow
     useEffect(() => {
@@ -46,6 +69,61 @@ const EventPage: React.FC = () => {
             setCurrentImageIndex(prev => (prev - 1 + eventImages.length) % eventImages.length);
         }
     };
+
+    const generateUserColor = (name: string) => {
+        const colors = [
+            'from-blue-500 to-purple-600',
+            'from-green-500 to-teal-600',
+            'from-red-500 to-pink-600',
+            'from-yellow-500 to-orange-600',
+            'from-purple-500 to-indigo-600',
+            'from-teal-500 to-cyan-600',
+            'from-pink-500 to-rose-600',
+            'from-indigo-500 to-blue-600',
+        ];
+
+        // Generate consistent index based on name
+        const hash = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+        return colors[hash % colors.length];
+    };
+
+    const generateRoleColorHSL = (role: string) => {
+        // Generate consistent hue based on role name
+        const hash = role.toLowerCase().split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+        const hue = hash % 360; // 0-359 degrees on color wheel
+
+        return {
+            bg: `hsl(${hue}, 60%, 15%)`, // Dark background
+            text: `hsl(${hue}, 70%, 70%)`, // Light text
+            border: `hsl(${hue}, 60%, 40%)` // Medium border
+        };
+    };
+
+    if (!guildId) {
+        return (
+            <>
+                <div className="fixed inset-0 -z-10">
+                    <Prism
+                        animationType="rotate"
+                        timeScale={0.25}
+                        scale={1}
+                        height={3}
+                        baseWidth={3}
+                        noise={0}
+                        glow={0.5}
+                        hueShift={0.06}
+                        colorFrequency={0.25}
+                    />
+                </div>
+                <div className="flex flex-col min-h-screen bg-transparent text-default w-full justify-center items-center p-4 relative z-10">
+                    <GlassBox className="p-8 text-center">
+                        <h2 className="text-xl font-semibold mb-2">Loading Guild...</h2>
+                        <p className="text-sm opacity-70">Please wait while we load guild data.</p>
+                    </GlassBox>
+                </div>
+            </>
+        );
+    }
 
     // Loading state - check if events are still loading
     if (events.length === 0) {
@@ -156,8 +234,8 @@ const EventPage: React.FC = () => {
                                     📅 <span>{formatDateTime(event.event_date)}</span>
                                 </div>
                                 <div className={`text-sm px-3 py-1 rounded-full ${isUpcoming
-                                        ? 'bg-green-500/20 text-green-300'
-                                        : 'bg-gray-500/20 text-gray-300'
+                                    ? 'bg-green-500/20 text-green-300'
+                                    : 'bg-gray-500/20 text-gray-300'
                                     }`}>
                                     {isUpcoming ? 'Upcoming' : 'Past Event'}
                                 </div>
@@ -220,16 +298,69 @@ const EventPage: React.FC = () => {
                         {/* Right Column - Event Attendees */}
                         <GlassBox className="p-6 space-y-4 h-fit">
                             <div className="flex items-center justify-between mb-4">
-                                <h2 className="text-xl font-semibold">👥 Attendees</h2>
+                                <h2 className="text-xl font-semibold">👥 Participants</h2>
                                 <div className="text-sm opacity-70">
-                                    Coming Soon
+                                    {eventParticipants.length} Participants
                                 </div>
                             </div>
-                            <div className="text-center py-12 opacity-60">
-                                <div className="text-4xl mb-4">👤</div>
-                                <p className="text-sm mb-2">Attendee management</p>
-                                <p className="text-xs opacity-60">Feature under development</p>
-                            </div>
+                            {eventParticipants.length > 0 ? (
+                                <div className="max-h-96 overflow-y-auto space-y-3">
+                                    {eventParticipants.map((participant, index) => (
+                                        <div
+                                            key={participant.user_id}
+                                            className="flex items-center justify-between p-3 bg-white/5 hover:bg-white/10 rounded-lg transition-all duration-200 group"
+                                        >
+                                            <div className="flex items-center space-x-3">
+                                                {/* Generated Avatar */}
+                                                <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${generateUserColor(participant.name)} flex items-center justify-center text-white font-semibold text-sm shadow-lg group-hover:scale-105 transition-transform duration-200`}>
+                                                    {participant.name.charAt(0).toUpperCase()}
+                                                </div>
+
+                                                <div className="flex flex-col">
+                                                    <span className="text-sm font-medium">{participant.name}</span>
+                                                    {participant.roles && participant.roles.length > 0 && (
+                                                        <div className="flex gap-1 mt-1 flex-wrap">
+                                                            {participant.roles.slice(0, 3).map((role: string, roleIndex: number) => {
+                                                                const roleStyle = generateRoleColorHSL(role);
+                                                                return (
+                                                                    <span
+                                                                        key={roleIndex}
+                                                                        className='text-xs px-1.5 py-0.5 rounded border'
+                                                                        style={{
+                                                                            backgroundColor: roleStyle.bg,
+                                                                            color: roleStyle.text,
+                                                                            borderColor: roleStyle.border,
+                                                                        }}
+                                                                    >
+                                                                        {role}
+                                                                    </span>
+                                                                );
+                                                            })}
+                                                            {participant.roles.length > 3 && (
+                                                                <span className="text-xs text-gray-400 px-1">
+                                                                    +{participant.roles.length - 3} more
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            {/* Join indicator */}
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                                                <span className="text-xs text-gray-400">Joined</span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="text-center py-12 opacity-60">
+                                    <div className="text-4xl mb-4">🎯</div>
+                                    <p className="text-sm mb-2">Ready for Adventure</p>
+                                    <p className="text-xs opacity-60">Waiting for participants to join</p>
+                                </div>
+                            )}
                         </GlassBox>
                     </div>
 
@@ -250,7 +381,7 @@ const EventPage: React.FC = () => {
                                                 e.currentTarget.style.display = 'none';
                                             }}
                                         />
-                                        
+
                                         {/* Navigation Arrows */}
                                         {eventImages.length > 1 && (
                                             <>
@@ -284,8 +415,8 @@ const EventPage: React.FC = () => {
                                                     key={index}
                                                     onClick={() => setCurrentImageIndex(index)}
                                                     className={`aspect-square rounded-lg overflow-hidden border-2 transition-all hover:scale-105 ${index === currentImageIndex
-                                                            ? 'border-blue-400 ring-2 ring-blue-400/30'
-                                                            : 'border-white/20 hover:border-white/40'
+                                                        ? 'border-blue-400 ring-2 ring-blue-400/30'
+                                                        : 'border-white/20 hover:border-white/40'
                                                         }`}
                                                 >
                                                     <img
