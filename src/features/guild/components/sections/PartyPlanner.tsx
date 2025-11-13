@@ -132,6 +132,8 @@ export function PartyPlanner() {
         : [];
     const selectedPreset = matchedPresets.find(preset => preset.id === selectedPresetId);
 
+    console.log('Selected presets', selectedPreset);
+
     useEffect(() => {
         if (!selectedEvent || !selectedPreset || !guildId) return;
         const fetchData = async () => {
@@ -158,13 +160,13 @@ export function PartyPlanner() {
 
     // Role change handler
     const handleRoleChange = (partyId: number, memberIndex: number, newRole: string) => {
-        setParties(prevParties => 
-            prevParties.map(party => 
-                party.id === partyId 
+        setParties(prevParties =>
+            prevParties.map(party =>
+                party.id === partyId
                     ? {
                         ...party,
                         members: party.members.map((member: PartyMember, index: number) =>
-                            index === memberIndex 
+                            index === memberIndex
                                 ? { ...member, role: newRole }
                                 : member
                         )
@@ -298,7 +300,7 @@ export function PartyPlanner() {
                     {selectedEvent && (
                         <GlassBox className="p-6">
                             <h2 className="text-xl font-semibold mb-4">⚙️ Select Party Preset</h2>
-                            <div className="text-center py-8 opacity-60">
+                            <div className="text-center">
                                 <CustomSelect
                                     options={matchedPresets.map(preset => ({
                                         id: preset.id,
@@ -309,6 +311,48 @@ export function PartyPlanner() {
                                     placeholder="Choose a party preset..."
                                     className="w-full"
                                 />
+
+                                {/* Selected Event Details */}
+                                {selectedPreset && (
+                                    <div className="mt-6 p-4 bg-black/20 rounded-lg border border-white/10">
+                                        <h3 className="font-semibold mb-2">🎮 {selectedPreset.preset_name}</h3>
+                                        <div className="text-sm space-y-3">
+                                            <h3 className="font-semibold flex items-center gap-2">
+                                                <span>🛠️</span>
+                                                <span>Roles Configuration</span>
+                                            </h3>
+
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                                {selectedPreset.data.roles.map((role: any, index: number) => (
+                                                    <div
+                                                        key={index}
+                                                        className="flex items-center justify-between p-2 bg-white/5 rounded-lg border border-white/10 hover:bg-white/10 transition-colors duration-200"
+                                                    >
+                                                        <div className="flex items-center gap-2">
+                                                            <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                                                            <span className="font-medium text-white">{role.roleName}</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-1">
+                                                            <span className="text-xs text-white/60">×</span>
+                                                            <span className="bg-blue-500/20 text-blue-300 px-2 py-1 rounded text-xs font-semibold">
+                                                                {role.count}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+
+                                            {/* Total party size indicator */}
+                                            <div className="pt-2 border-t border-white/10">
+                                                <div className="text-xs text-white/60 text-center">
+                                                    Total Party Size: <span className="font-semibold text-white">
+                                                        {selectedPreset.data.roles.reduce((sum: number, role: any) => sum + role.count, 0)}
+                                                    </span> members
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </GlassBox>
                     )}
