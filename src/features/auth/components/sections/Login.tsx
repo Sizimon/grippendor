@@ -7,6 +7,7 @@ import { useAuth } from '@/features/auth/context/AuthProvider';
 import Prism from '@/bits/Prism';
 import GlassBox from '@/shared/GlassBox';
 import GlassInput from '@/shared/GlassInput';
+import { BackgroundVideo } from '@/features/guild/components/ui/BackgroundVideo';
 
 export default function Login() {
     const router = useRouter();
@@ -43,17 +44,7 @@ export default function Login() {
     return (
         <>
             <div className="fixed inset-0 z-0">
-                <Prism
-                    animationType="rotate"
-                    timeScale={0.5}
-                    scale={1}
-                    height={3}
-                    baseWidth={3}
-                    noise={0}
-                    glow={1}
-                    hueShift={0.06}
-                    colorFrequency={0.25}
-                />
+                <BackgroundVideo />
             </div>
 
             <ToastContainer

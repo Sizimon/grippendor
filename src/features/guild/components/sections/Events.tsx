@@ -6,6 +6,7 @@ import { formatDateTime } from '@/features/guild/utils/formatDate';
 import NxtBtn from '@/shared/NxtBtn';
 import { useRouter, useParams } from 'next/navigation';
 import Prism from "@/bits/Prism";
+import { BackgroundVideo } from '../ui/BackgroundVideo';
 
 const Events: React.FC = () => {
     const router = useRouter();
@@ -73,17 +74,7 @@ const Events: React.FC = () => {
         <>
             {/* Fixed Prism Background */}
             <div className="fixed inset-0 z-0">
-                <Prism
-                    animationType="rotate"
-                    timeScale={0.25}
-                    scale={1}
-                    height={3}
-                    baseWidth={3}
-                    noise={0}
-                    glow={0.5}
-                    hueShift={0.06}
-                    colorFrequency={0.25}
-                />
+                <BackgroundVideo />
             </div>
 
             {/* Events Content */}

@@ -9,6 +9,7 @@ import { guildAPI } from '../../api/api';
 
 import { PartyMember } from '../../types';
 import { PartyContainer } from '../ui/PartyContainer';
+import { BackgroundVideo } from '../ui/BackgroundVideo';
 
 interface CustomSelectProps {
     options: Array<{ id: string | number; name: string; }>;
@@ -233,17 +234,7 @@ export function PartyPlanner() {
         <>
             {/* Fixed Prism Background */}
             <div className="fixed inset-0 -z-10">
-                <Prism
-                    animationType="rotate"
-                    timeScale={0.25}
-                    scale={1}
-                    height={3}
-                    baseWidth={3}
-                    noise={0}
-                    glow={0.5}
-                    hueShift={0.06}
-                    colorFrequency={0.25}
-                />
+                <BackgroundVideo />
             </div>
 
             {/* Planner Content */}
