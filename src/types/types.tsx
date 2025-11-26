@@ -16,7 +16,8 @@ export interface GuildContextType {
     config: config | null;
     members: user[],
     events: event[],
-    presets: preset[]
+    presets: preset[],
+    refreshData: (force?: boolean) => Promise<void>;
 }
 
 // GUILD CONFIG TYPE

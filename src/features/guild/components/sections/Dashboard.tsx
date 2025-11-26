@@ -1,6 +1,6 @@
 'use client';
 import React from "react";
-import Prism from "@/bits/Prism";
+
 import GlassBox from "@/shared/GlassBox";
 import { useGuild } from "../../context/GuildProvider";
 import { formatDateTime } from '@/features/guild/utils/formatDate';
@@ -20,10 +20,11 @@ const Dashboard: React.FC = () => {
     const nextEvent = upcomingEvents[0]
     return (
         <>
-            {/* Fixed Prism Background */}
+            {/* Fixed Background */}
             <div className="fixed inset-0 z-0">
                 <BackgroundVideo />
             </div>
+
             {/* Dashboard Content */}
             <div className="flex flex-col min-h-screen bg-transparent text-default w-full justify-center items-center gap-8 p-4">
                 <div className="w-full max-w-6xl flex flex-col justify-center items-center gap-8">

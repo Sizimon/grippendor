@@ -5,7 +5,6 @@ import { useGuild } from '../../context/GuildProvider';
 import { formatDateTime } from '@/features/guild/utils/formatDate';
 import NxtBtn from '@/shared/NxtBtn';
 import { useRouter, useParams } from 'next/navigation';
-import Prism from "@/bits/Prism";
 import { BackgroundVideo } from '../ui/BackgroundVideo';
 
 const Events: React.FC = () => {

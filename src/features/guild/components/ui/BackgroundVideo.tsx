@@ -7,8 +7,7 @@ export const BackgroundVideo = () => {
     useEffect(() => {
         if (videoRef.current) {
             // Set playback speed (1.0 = normal speed)
-            videoRef.current.playbackRate = 1; // 0.5 = half speed (slower)
-            // videoRef.current.playbackRate = 2.0; // 2.0 = double speed (faster)
+            videoRef.current.playbackRate = 0.8;
         }
     }, []);
 

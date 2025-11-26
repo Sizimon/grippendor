@@ -15,9 +15,9 @@ export const apiRequest = async (endpoint: string, options: RequestInit & { skip
         console.log(`Making API request to: ${API_BASE_URL}${endpoint}`, config);
         const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
         
-        if (response.status === 401) {
-            throw new Error('Unauthorized');
-        }
+        // if (response.status === 401) {
+        //     throw new Error('Unauthorized');
+        // }
 
         if (!response.ok) {
             const contentType = response.headers.get('Content-Type');
