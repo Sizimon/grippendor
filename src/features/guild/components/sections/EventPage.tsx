@@ -3,11 +3,11 @@ import React, { useState, useEffect, use } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import GlassBox from '@/shared/GlassBox';
 import NxtBtn from '@/shared/NxtBtn';
-import Prism from "@/bits/Prism";
 import { useGuild } from '../../context/GuildProvider';
 import { useAuth } from '@/features/auth/context/AuthProvider';
 import { formatDateTime } from '@/features/guild/utils/formatDate';
 import { guildAPI } from '../../api/api';
+import { BackgroundVideo } from '../ui/BackgroundVideo';
 
 const EventPage: React.FC = () => {
     const router = useRouter();
@@ -79,17 +79,7 @@ const EventPage: React.FC = () => {
         return (
             <>
                 <div className="fixed inset-0 -z-10">
-                    <Prism
-                        animationType="rotate"
-                        timeScale={0.25}
-                        scale={1}
-                        height={3}
-                        baseWidth={3}
-                        noise={0}
-                        glow={0.5}
-                        hueShift={0.06}
-                        colorFrequency={0.25}
-                    />
+                    <BackgroundVideo />
                 </div>
                 <div className="flex flex-col min-h-screen bg-transparent text-default w-full justify-center items-center p-4 relative z-10">
                     <GlassBox className="p-8 text-center">
@@ -106,18 +96,9 @@ const EventPage: React.FC = () => {
         return (
             <>
                 <div className="fixed inset-0 z-0">
-                    <Prism
-                        animationType="rotate"
-                        timeScale={0.25}
-                        scale={1}
-                        height={3}
-                        baseWidth={3}
-                        noise={0}
-                        glow={0.5}
-                        hueShift={0.06}
-                        colorFrequency={0.25}
-                    />
+                    <BackgroundVideo />
                 </div>
+
                 <div className="flex flex-col min-h-screen bg-transparent text-default w-full justify-center items-center p-4">
                     <GlassBox className="p-8 text-center">
                         <h2 className="text-xl font-semibold mb-2">Loading Events...</h2>
@@ -133,18 +114,9 @@ const EventPage: React.FC = () => {
         return (
             <>
                 <div className="fixed inset-0 z-0">
-                    <Prism
-                        animationType="rotate"
-                        timeScale={0.25}
-                        scale={1}
-                        height={3}
-                        baseWidth={3}
-                        noise={0}
-                        glow={0.5}
-                        hueShift={0.06}
-                        colorFrequency={0.25}
-                    />
+                    <BackgroundVideo />
                 </div>
+
                 <div className="flex flex-col min-h-screen bg-transparent text-default w-full justify-center items-center p-4">
                     <GlassBox className="p-8 text-center">
                         <h2 className="text-xl font-semibold mb-2">Event Not Found</h2>
@@ -171,18 +143,8 @@ const EventPage: React.FC = () => {
     return (
         <>
             {/* Fixed Prism Background */}
-            <div className="fixed inset-0 -z-10">
-                <Prism
-                    animationType="rotate"
-                    timeScale={0.25}
-                    scale={1}
-                    height={3}
-                    baseWidth={3}
-                    noise={0}
-                    glow={0.5}
-                    hueShift={0.06}
-                    colorFrequency={0.25}
-                />
+            <div className="fixed inset-0 z-0">
+                <BackgroundVideo />
             </div>
 
             {/* Event Page Content */}

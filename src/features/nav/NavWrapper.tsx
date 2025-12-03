@@ -7,7 +7,6 @@ import { useAuth } from "@/features/auth/context/AuthProvider";
 export const NavWrapper = () => {
     const { isAuthenticated } = useAuth();
     const [navOpen, setNavOpen] = useState(false);
-    console.log(navOpen)
 
     return (
         <>

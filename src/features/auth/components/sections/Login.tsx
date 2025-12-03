@@ -1,12 +1,13 @@
 'use client';
 import React, { useState } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
+import Toast from '@/shared/Toast';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/features/auth/context/AuthProvider';
 
-import Prism from '@/bits/Prism';
 import GlassBox from '@/shared/GlassBox';
 import GlassInput from '@/shared/GlassInput';
+import { BackgroundVideo } from '@/features/guild/components/ui/BackgroundVideo';
 
 export default function Login() {
     const router = useRouter();
@@ -15,14 +16,10 @@ export default function Login() {
 
     const [guildId, setGuildId] = useState<string>('')
     const [password, setPassword] = useState<string>('')
-    const [error, setError] = useState<string>('')
-    const [success, setSuccess] = useState<string>('')
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        setError('');
-        setSuccess('');
         setIsLoading(true);
         if (!guildId || !password) {
             toast.error('Please fill in all fields.');
@@ -35,7 +32,6 @@ export default function Login() {
             router.push(`/${guildId}`);
         } else {
             toast.error(result.error || 'Login failed.');
-            // setError(result.error || 'Login failed.');
         }
         setIsLoading(false);
     };
@@ -43,31 +39,10 @@ export default function Login() {
     return (
         <>
             <div className="fixed inset-0 z-0">
-                <Prism
-                    animationType="rotate"
-                    timeScale={0.5}
-                    scale={1}
-                    height={3}
-                    baseWidth={3}
-                    noise={0}
-                    glow={1}
-                    hueShift={0.06}
-                    colorFrequency={0.25}
-                />
+                <BackgroundVideo />
             </div>
 
-            <ToastContainer
-                position='top-right'
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={true}
-                closeOnClick={false}
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="dark"
-            />
+            <Toast />
 
             <div className='relative z-10'>
                 <div className='flex flex-col h-lvh justify-center items-center'>
