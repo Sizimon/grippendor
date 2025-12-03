@@ -11,7 +11,7 @@ export function Navigation({
         setNavOpen: (open: boolean) => void;
     }) {
     const router = useRouter();
-    const { guild } = useAuth();
+    const { guild, logout } = useAuth();
     if (!guild) return null;
 
     // Nav Ref for animation
@@ -79,6 +79,15 @@ export function Navigation({
                         onClick={() => router.push(`/${guild.id}/party-planner`)}
                     >
                         Party Planner
+                    </button>
+                    <button 
+                        className='uppercase hover:text-cyan-300 transition-color duration-400 cursor-pointer'
+                        onClick={() => {
+                            logout();
+                            router.push('/landing');
+                        }}
+                    >
+                        Logout
                     </button>
                 </div>
             </nav>
