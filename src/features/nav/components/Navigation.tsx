@@ -76,12 +76,6 @@ export function Navigation({
                     </button>
                     <button 
                         className='uppercase hover:text-cyan-300 transition-color duration-400 cursor-pointer'
-                        onClick={() => router.push(`/${guild.id}/members`)}
-                    >
-                        Members
-                    </button>
-                    <button 
-                        className='uppercase hover:text-cyan-300 transition-color duration-400 cursor-pointer'
                         onClick={() => router.push(`/${guild.id}/party-planner`)}
                     >
                         Party Planner

@@ -82,7 +82,7 @@ const Events: React.FC = () => {
 
                     {/* Header Section */}
                     <div className="text-center">
-                        <h1 className="text-3xl md:text-4xl font-extralight mb-2">Guild Events</h1>
+                        <h1 className="text-3xl md:text-4xl font-extralight mb-2">Events</h1>
                         <p className="text-lg font-light opacity-80">Manage and view all server events</p>
                     </div>
 

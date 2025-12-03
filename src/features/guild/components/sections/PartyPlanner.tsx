@@ -1,6 +1,5 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
-import Prism from "@/bits/Prism";
 import GlassBox from "@/shared/GlassBox";
 import { useGuild } from "../../context/GuildProvider";
 import { useAuth } from '@/features/auth/context/AuthProvider';
@@ -243,7 +242,7 @@ export function PartyPlanner() {
 
                     {/* Header Section */}
                     <div className="text-center">
-                        <h1 className="text-3xl md:text-4xl font-extralight mb-2">🎯 Party Maker</h1>
+                        <h1 className="text-3xl md:text-4xl font-extralight mb-2">🎯 Party Planner</h1>
                         <p className="text-lg font-light opacity-80">Generate parties from event RSVPs using bot presets</p>
                     </div>
 

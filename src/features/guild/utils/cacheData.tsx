@@ -4,7 +4,7 @@ interface CacheData {
     expiry: number;
 }
 
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+const CACHE_DURATION = 5 * 60 * 1000;
 
 export const sessionCache = {
     set: (key: string, data: any, duration: number = CACHE_DURATION): void => {
@@ -16,6 +16,7 @@ export const sessionCache = {
 
         try {
             sessionStorage.setItem(key, JSON.stringify(cacheData));
+            console.log(`💾 Cached ${key} until ${new Date(cacheData.expiry).toLocaleTimeString()}`);
         } catch (error) {
             console.error('Error setting session cache:', error);
         }
@@ -24,18 +25,26 @@ export const sessionCache = {
     get: (key: string): any | null => {
         try {
             const item = sessionStorage.getItem(key);
-            if (!item) return null;
-
-            const cacheData: CacheData = JSON.parse(item);
-            
-            if (Date.now() - cacheData.timestamp > cacheData.expiry) {
-                sessionStorage.remove(key);
+            if (!item) {
+                console.log(`🔍 No cache found for ${key}`);
                 return null;
             }
 
+            const cacheData: CacheData = JSON.parse(item);
+            
+            const now = Date.now();
+            if (now > cacheData.expiry) {
+                console.log(`⏰ Cache expired for ${key}. Age: ${Math.floor((now - cacheData.timestamp) / (1000 * 60))}min`);
+                sessionStorage.removeItem(key); // Fix: was sessionStorage.remove()
+                return null;
+            }
+
+            const ageMinutes = Math.floor((now - cacheData.timestamp) / (1000 * 60));
+            console.log(`✅ Cache hit for ${key} (age: ${ageMinutes}min)`);
             return cacheData.data;
         } catch (error) {
             console.error('Error getting session cache:', error);
+            sessionStorage.removeItem(key);
             return null;
         }
     },
@@ -70,10 +79,10 @@ export const useSessionCache = (guildId: string | undefined) => {
         if (!guildId) return {};
 
         return {
-            config: !!sessionCache.get(`guild_${guildId}_config`),
-            events: !!sessionCache.get(`guild_${guildId}_events`),
-            members: !!sessionCache.get(`guild_${guildId}_members`),
-            presets: !!sessionCache.get(`guild_${guildId}_presets`),
+            config: !!sessionCache.get(`config_${guildId}`),
+            events: !!sessionCache.get(`events_${guildId}`),
+            members: !!sessionCache.get(`members_${guildId}`),
+            presets: !!sessionCache.get(`presets_${guildId}`),
         };
     };
 
