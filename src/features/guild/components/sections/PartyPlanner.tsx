@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import GlassBox from "@/shared/GlassBox";
 import { useGuild } from "../../context/GuildProvider";
 import { useAuth } from '@/features/auth/context/AuthProvider';
@@ -29,12 +30,15 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
     const [selectedOption, setSelectedOption] = useState(
         options.find(option => option.id === value)
     );
+    const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const buttonRef = useRef<HTMLButtonElement>(null);
 
     // Close dropdown when clicking outside
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node) &&
+                buttonRef.current && !buttonRef.current.contains(event.target as Node)) {
                 setIsOpen(false);
             }
         };
@@ -43,18 +47,35 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
+    // Update dropdown position when opened
+    useEffect(() => {
+        if (isOpen && buttonRef.current) {
+            const rect = buttonRef.current.getBoundingClientRect();
+            setDropdownPosition({
+                top: rect.bottom + window.scrollY + 8,
+                left: rect.left + window.scrollX,
+                width: rect.width
+            });
+        }
+    }, [isOpen]);
+
     const handleSelect = (option: typeof options[0]) => {
         setSelectedOption(option);
         onChange(option.id);
         setIsOpen(false);
     };
 
+    const toggleDropdown = () => {
+        setIsOpen(!isOpen);
+    };
+
     return (
-        <div className={`relative ${className}`} ref={dropdownRef}>
+        <div className={`relative ${className}`}>
             {/* Selected Value Display */}
             <button
+                ref={buttonRef}
                 type="button"
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={toggleDropdown}
                 className="w-full bg-black/20 border border-white/20 rounded-lg p-3 text-left flex items-center justify-between hover:bg-black/30 hover:border-white/30 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
             >
                 <span className={selectedOption ? "text-white" : "text-white/60"}>
@@ -70,9 +91,18 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
                 </svg>
             </button>
 
-            {/* Dropdown Options */}
-            {isOpen && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-black/80 backdrop-blur-sm border border-white/20 rounded-lg shadow-2xl z-50 max-h-60 overflow-y-auto">
+            {/* Portal-rendered Dropdown Options */}
+            {isOpen && createPortal(
+                <div
+                    ref={dropdownRef}
+                    className="fixed bg-black/90 backdrop-blur-sm border border-white/20 rounded-lg shadow-2xl max-h-60 overflow-y-auto"
+                    style={{
+                        top: dropdownPosition.top,
+                        left: dropdownPosition.left,
+                        width: dropdownPosition.width,
+                        zIndex: 9999
+                    }}
+                >
                     {options.length > 0 ? (
                         options.map((option) => (
                             <button
@@ -90,7 +120,8 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
                             No options available
                         </div>
                     )}
-                </div>
+                </div>,
+                document.body
             )}
         </div>
     );
@@ -231,7 +262,7 @@ export function PartyPlanner() {
 
     return (
         <>
-            {/* Fixed Prism Background */}
+            {/* Fixed Background */}
             <div className="fixed inset-0 -z-10">
                 <BackgroundVideo />
             </div>
@@ -352,7 +383,7 @@ export function PartyPlanner() {
                         <GlassBox className="p-6 text-center">
                             <button
                                 type="button"
-                                className="bg-green-500/20 hover:bg-green-500/30 transition-colors duration-200 rounded-lg py-3 px-8 font-semibold text-green-300 border border-green-500/30 hover:border-green-500/50 cursor-pointer"
+                                className={`transition-colors duration-200 rounded-lg py-3 px-8 font-semibold ${!selectedPresetId ? 'opacity-50 bg-gray-500/20 hover:bg-gray-500/30 text-gray-300 border-gray-500/30 hover:border-gray-500/50 cursor-not-allowed' : 'bg-green-500/20 hover:bg-green-500/30 text-green-300 border border-green-500/30 hover:border-green-500/50 cursor-pointer'}`}
                                 disabled={!selectedPresetId}
                                 onClick={handleGenerateParties}
                             >
