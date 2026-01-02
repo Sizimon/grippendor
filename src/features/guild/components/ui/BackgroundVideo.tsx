@@ -23,7 +23,7 @@ export const BackgroundVideo = () => {
                     playsInline
                     className='w-full h-full object-cover opacity-65 blur-xs'
                 >
-                    <source src="/grippendor/bg.webm" type="video/webm" />
+                    <source src="/bg.webm" type="video/webm" />
                 </video>
             </div>
         </section>
